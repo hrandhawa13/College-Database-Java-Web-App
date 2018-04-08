@@ -1,6 +1,7 @@
 package com.web.jdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -66,5 +67,30 @@ public class StudentDBUtil {
 		catch( Exception e ) {
 			e.printStackTrace();
 		}
+	}
+
+	public void addStudent(Student temp) throws Exception{
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		try {
+			myConn = dataSource.getConnection();
+			//create sql for insert
+			String sql = "insert into student"
+						+"(first_name, last_name, email)"
+						+"values(?,?,?)";
+			myStmt = myConn.prepareStatement(sql);
+			//set the value for student
+			myStmt.setString(1, temp.getFirstName());
+			myStmt.setString(2, temp.getLastName());
+			myStmt.setString(3, temp.getEmail());
+			//execute sql statement
+			myStmt.executeUpdate();
+		}
+		finally {
+			//clean up 
+			close(myConn, myStmt, null);
+		}
+		
+	
 	}
 }

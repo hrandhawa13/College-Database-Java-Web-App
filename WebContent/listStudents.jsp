@@ -6,11 +6,10 @@
 <head>
 	<title>Student Tracker App</title>
 	
-	<link type="text/css" rel="stylesheet" href="css/style.css">
+	<link type="text/css" rel="stylesheet" href="CSS/style.css">
 </head>
 
 <body>
-
 	<div id="wrapper">
 		<div id="header">
 			<h2>HarmanRandhawa University</h2>
@@ -19,6 +18,11 @@
 
 	<div id="container">
 		<div id="content">
+		
+			<input type="button" value = "Add New Student" 
+				onclick = "window.location.href='addStudentForm.jsp'; return false;"
+				class ="add-student-button"
+			/>
 			<table>
 			
 				<tr>
@@ -27,7 +31,7 @@
 					<th>Email</th>
 					<th>Action</th>
 				</tr>
-				<c:forEach var="tempStudent" items="${STUDENT_LIST}">
+				<c:forEach var="tempStudent" items="${students}">
 					<tr>
 						<td> ${tempStudent.firstName} </td>
 						<td> ${tempStudent.lastName} </td>

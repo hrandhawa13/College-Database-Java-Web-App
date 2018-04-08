@@ -26,7 +26,6 @@ public class StudentControllerServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		System.out.println("In init method");
 		try {
 			stuDBUtil = new StudentDBUtil(dataSrc); 
 		}
@@ -40,19 +39,50 @@ public class StudentControllerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			System.out.println("Before the list ");
-			listStudents(request, response);
-			System.out.println("after the list");
+			String cmd = request.getParameter("command");
+			
+			if(cmd == null )
+				cmd = "LIST";
+			
+			switch(cmd) {
+			case "LIST":
+				listStudents(request, response);
+				break;
+			case "ADD":
+				addStudent(request,response);
+				break;
+			default: 
+				listStudents( request, response);
+			
+			}
+			
+			
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
 
+	private void addStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//read data from form
+		
+		//create new student
+		Student temp = createStudent(request);
+		// add it to db
+		stuDBUtil.addStudent(temp);
+		//redirect to home page
+		listStudents(request, response);
+	}
+
+	private Student createStudent(HttpServletRequest request) {
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		return new Student(firstName, lastName, email);
+	}
+
 	private void listStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		List<Student> students = stuDBUtil.getStudents();
 		request.setAttribute("students", students);
-		System.out.println("From listStudents");
-		System.out.println(students.toString());
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/listStudents.jsp");
 		dispatcher.forward(request, response);
 	}
