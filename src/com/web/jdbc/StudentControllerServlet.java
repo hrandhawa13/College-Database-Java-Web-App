@@ -40,10 +40,8 @@ public class StudentControllerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String cmd = request.getParameter("command");
-			
 			if(cmd == null )
 				cmd = "LIST";
-			
 			switch(cmd) {
 			case "LIST":
 				listStudents(request, response);
@@ -51,9 +49,15 @@ public class StudentControllerServlet extends HttpServlet {
 			case "ADD":
 				addStudent(request,response);
 				break;
+			case "LOAD":
+				loadStudent(request, response);
+				break;
+			case "UPDATE":
+				updateStudent(request, response);
+				break;
 			default: 
 				listStudents( request, response);
-			
+				break;
 			}
 			
 			
@@ -62,9 +66,33 @@ public class StudentControllerServlet extends HttpServlet {
 		}
 	}
 
+	private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//read data from form and create a student
+		int id = Integer.parseInt(request.getParameter("studentId"));
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		Student temp = new Student(id, firstName, lastName, email);
+		//send data to db and then update it in there
+		 stuDBUtil.updateStudent(temp);
+		//list the students
+		listStudents(request, response);
+		
+	}
+
+	private void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		String id = request.getParameter("studentId");
+		
+		Student temp = stuDBUtil.getStudent(id);
+		request.setAttribute("student", temp);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("updateStudentForm.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+
 	private void addStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		//read data from form
-		
 		//create new student
 		Student temp = createStudent(request);
 		// add it to db
